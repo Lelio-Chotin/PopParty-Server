@@ -6,28 +6,33 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: { origin: "*" }
+    cors: { origin: "*" }
 });
 
 io.on("connection", (socket) => {
-  socket.on("join-room", ({ roomId, username }) => {
-    socket.join(roomId);
-    socket.username = username;
-  });
-
-  socket.on("chat-message", ({ roomId, message }) => {
-    io.to(roomId).emit("chat-message", {
-      message,
-      username: socket.username
+    socket.on("join-room", ({ roomId, username }) => {
+        socket.join(roomId);
+        socket.username = username;
     });
-  });
 
-  socket.on("video-event", ({ roomId, type, time }) => {
-    socket.to(roomId).emit("video-event", {
-      type,
-      time
+    socket.on("chat-message", ({ roomId, message }) => {
+        io.to(roomId).emit("chat-message", {
+            message,
+            username: socket.username
+        });
     });
-  });
+
+    socket.on("video-event", ({ roomId, type, time }) => {
+        socket.to(roomId).emit("video-event", {
+            type,
+            time
+        });
+    });
+
+    socket.on("video-change", ({ roomId, url }) => {
+        console.log("Video changed to", url);
+        socket.to(roomId).emit("video-change", { url });
+    });
 });
 
 server.listen(process.env.PORT || 3000);
