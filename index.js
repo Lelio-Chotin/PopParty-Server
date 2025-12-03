@@ -6,33 +6,35 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
 io.on("connection", (socket) => {
-    console.log("✅ User connected", socket.id);
+  console.log("✅ Connected:", socket.id);
 
-    socket.on("join-room", (roomId) => {
-        socket.join(roomId);
-        console.log(`📦 ${socket.id} joined room: ${roomId}`);
-    });
+  socket.on("join-room", ({ roomId, username }) => {
+    socket.join(roomId);
+    socket.username = username;
 
-    socket.on("chat-message", ({ roomId, message }) => {
-        io.to(roomId).emit("chat-message", {
-            message,
-            userId: socket.id
-        });
-    });
+    console.log(`📦 ${username} joined ${roomId}`);
+  });
 
-    socket.on("disconnect", () => {
-        console.log("❌ User disconnected", socket.id);
+  socket.on("chat-message", ({ roomId, message }) => {
+    io.to(roomId).emit("chat-message", {
+      message,
+      username: socket.username
     });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Disconnected:", socket.username || socket.id);
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log("🚀 Server running on port", PORT);
+  console.log("🚀 Server running on port", PORT);
 });
