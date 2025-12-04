@@ -12,11 +12,24 @@ const io = new Server(server, {
 app.get("/join/:roomId", (req, res) => {
     const { roomId } = req.params;
 
-    
-    res.redirect(
-        `https://www.youtube.com/watch?v=dQw4w9WgXcQ#room=${roomId}`
-    );
+    res.send(`
+        <html>
+          <head>
+            <title>WatchParty – Join</title>
+          </head>
+          <body>
+            <p>Joining WatchParty…</p>
+
+            <script>
+              // Redirection vers YouTube avec la room dans le hash
+              window.location.href = 
+                "https://www.youtube.com/#room=${roomId}";
+            </script>
+          </body>
+        </html>
+    `);
 });
+
 
 
 io.on("connection", socket => {
@@ -53,4 +66,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () =>
     console.log("WatchParty server running on", PORT)
 );
+
 
