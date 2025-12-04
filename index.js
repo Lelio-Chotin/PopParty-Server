@@ -8,24 +8,24 @@ const io = new Server(server, {
     cors: { origin: "*" }
 });
 
-// ================= JOIN LINK =================
+
 app.get("/join/:roomId", (req, res) => {
     const { roomId } = req.params;
 
-    // Redirection vers YouTube avec la room stockée
+    
     res.redirect(
         `https://www.youtube.com/watch?v=dQw4w9WgXcQ#room=${roomId}`
     );
 });
 
-// ================= SOCKET.IO =================
+
 io.on("connection", socket => {
 
     socket.on("join-room", ({ roomId, username }) => {
         socket.join(roomId);
         socket.roomId = roomId;
         socket.username = username;
-        console.log(`✅ ${username} joined ${roomId}`);
+        console.log(`${username} joined ${roomId}`);
     });
 
     socket.on("video-event", data => {
@@ -48,8 +48,9 @@ io.on("connection", socket => {
     });
 });
 
-// ================= START =================
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () =>
-    console.log("✅ WatchParty server running on", PORT)
+    console.log("WatchParty server running on", PORT)
 );
+
