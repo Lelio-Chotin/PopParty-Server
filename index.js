@@ -21,12 +21,14 @@ app.get("/join/:roomId", (req, res) => {
             <p>Joining WatchParty…</p>
 
             <script>
-              window.location.href = `https://www.youtube.com/watch?v=${videoId}&room=${roomId}`;
+              window.location.href =
+                "https://www.youtube.com/watch?room=${roomId}";
             </script>
           </body>
         </html>
     `);
 });
+
 
 
 
@@ -64,6 +66,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () =>
     console.log("WatchParty server running on", PORT)
 );
+
 
 
 
