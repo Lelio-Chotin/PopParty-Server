@@ -8,29 +8,25 @@ const io = new Server(server, {
     cors: { origin: "*" }
 });
 
-
+// --- NOUVEAU : PAGE /join PRÉSERVE L’URL YOUTUBE ---
 app.get("/join/:roomId", (req, res) => {
     const { roomId } = req.params;
+    const videoUrl = req.query.url || "https://www.youtube.com/";
+
+    const finalUrl = `${videoUrl}${videoUrl.includes("?") ? "&" : "?"}room=${roomId}`;
 
     res.send(`
         <html>
-          <head>
-            <title>WatchParty – Join</title>
-          </head>
+          <head><title>WatchParty – Join</title></head>
           <body>
             <p>Joining WatchParty…</p>
-
             <script>
-              window.location.href =
-                "https://www.youtube.com/watch?room=${roomId}";
+              window.location.href = "${finalUrl}";
             </script>
           </body>
         </html>
     `);
 });
-
-
-
 
 io.on("connection", socket => {
 
@@ -56,20 +52,11 @@ io.on("connection", socket => {
         });
     });
 
-
     socket.on("disconnect", () => {
         console.log("❌ user disconnected");
     });
+
 });
 
-
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () =>
-    console.log("WatchParty server running on", PORT)
-);
-
-
-
-
-
-
+server.listen(PORT, () => console.log("WatchParty server running on", PORT));
